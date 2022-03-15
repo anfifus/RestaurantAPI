@@ -8,103 +8,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class RestaurantController {
-    private  RestaurantService serviceRestaurant;
+public class RestaurantRestController {
+    private RestaurantController restaurantController;
     @Autowired
-    public RestaurantController(RestaurantService serviceRestaurant){
-        this.serviceRestaurant = serviceRestaurant;
+    public RestaurantRestController(RestaurantController restaurantController){
+        this.restaurantController = restaurantController;
     }
     @PostMapping("/restaurants")
-    public Restaurant createRestaurant(@RequestBody Restaurant restaurantToAdd) {
-        serviceRestaurant.getRestaurantList().add(restaurantToAdd);
+    public Restaurant createRestaurant(@RequestBody Restaurant restaurantToAdd) throws Exception {
+        restaurantToAdd = restaurantController.createRestaurant(restaurantToAdd);
         return restaurantToAdd;
     }
 
     @GetMapping("/restaurants")
-    public List<Restaurant> showAll() {
-        return serviceRestaurant.getRestaurantList();
+    public List<Restaurant> showAll() throws Exception{
+        return restaurantController.getRestaurantList();
     }
 
     @DeleteMapping("/restaurants")
     public void deleteAll() {
-        serviceRestaurant.getRestaurantList().clear();
+        restaurantController.deleteAll();
     }
 
     @GetMapping("/restaurants/{restaurantId}")
     public Restaurant getRestaurantById(@PathVariable String restaurantId) throws Exception {
-        for (Restaurant currentRestaurant : serviceRestaurant.getRestaurantList()) {
-            if (currentRestaurant.getRestaurantId().equals(restaurantId)) {
-                return currentRestaurant;
-            }
-        }
-        throw new Exception("We didn't find a restaurant to show");
+        return restaurantController.getRestaurantById(restaurantId);
     }
 
     @DeleteMapping("/restaurants/{restaurantId}")
     public void deleteRestaurantById(@PathVariable String restaurantId) throws Exception{
-        for (Restaurant currentRestaurant : new ArrayList<>(serviceRestaurant.getRestaurantList())) {
-            if (currentRestaurant.getRestaurantId().equals(restaurantId)) {
-                serviceRestaurant.getRestaurantList().remove(currentRestaurant);
-                return;
-            }
-        }
-        throw new Exception("We didn't find a restaurant to delete");
+        restaurantController.deleteRestaurantById(restaurantId);
     }
     @PutMapping("/restaurants/{restaurantId}")
     public void updateRestaurantById(@PathVariable String restaurantId,@RequestBody Restaurant restaurantUpdated) throws Exception{
-        for (Restaurant currentRestaurant : serviceRestaurant.getRestaurantList()) {
-            if (currentRestaurant.getRestaurantId().equals(restaurantId)) {
-                currentRestaurant.setName(restaurantUpdated.getName());
-                currentRestaurant.setType(restaurantUpdated.getType());
-                return;
-            }
-
-        }
-        throw new Exception("We didn't find a restaurant to update");
+        restaurantController.updateRestaurantById(restaurantId,restaurantUpdated);
     }
     @PostMapping("/restaurants/{restaurantId}/tables")
     public void addTableInRestaurant(@RequestBody String jsonClients, @PathVariable String restaurantId) throws Exception{
 
-        JSONObject json = new JSONObject(jsonClients);
-
-        int clients = json.getInt("clients");
-
-
-        Restaurant restaurant = serviceRestaurant.findRestaurant(restaurantId);
-
-        if(restaurant != null){
-            restaurant.addClients(clients);
-        }
+        restaurantController.addTableInRestaurant(jsonClients,  restaurantId);
     }
     @GetMapping("restaurants/{restaurantId}/tables")
     public  List<Table> getAllTables(@PathVariable String restaurantId) throws Exception{
-        Restaurant restaurant = serviceRestaurant.findRestaurant(restaurantId);
-        if(restaurant != null){
-            return serviceRestaurant.getAllTables(restaurant);
-        }
-        return null;
+       return  restaurantController.getAllTables(restaurantId);
     }
     @DeleteMapping("restaurants/{restaurantId}/tables")
     public  void deleteAllTables(@PathVariable String restaurantId) throws Exception{
-        Restaurant restaurant = serviceRestaurant.findRestaurant(restaurantId);
-        if(restaurant != null){
-            serviceRestaurant.removeAllTables(restaurant);
-        }
-        return ;
+        restaurantController.deleteAllTables(restaurantId);
     }
     @GetMapping("restaurants/{restaurantId}/tables/{tableId}")
     public  Table getTable(@PathVariable String restaurantId,@PathVariable String tableId) throws Exception{
-        Restaurant restaurant = serviceRestaurant.findRestaurant(restaurantId);
-        if(restaurant != null){
-            return serviceRestaurant.getTable(restaurant,tableId);
-        }
-        return null;
+        return restaurantController.getTable(restaurantId,tableId);
     }
     @DeleteMapping("restaurants/{restaurantId}/tables/{tableId}")
     public void removeTable(@PathVariable String restaurantId,@PathVariable String tableId) throws Exception{
-        Restaurant restaurant = serviceRestaurant.findRestaurant(restaurantId);
-        if(restaurant != null){
-            serviceRestaurant.removeTable(restaurant,tableId);
-        }
+        restaurantController.removeTable(restaurantId,tableId);
+
     }
 }

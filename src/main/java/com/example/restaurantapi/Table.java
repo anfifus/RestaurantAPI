@@ -1,7 +1,10 @@
 package com.example.restaurantapi;
 
+import java.util.UUID;
+
 public class Table {
 
+    private String tableId = UUID.randomUUID().toString();
     private int currentSeatings=0;
 
     public Table(){
@@ -19,5 +22,9 @@ public class Table {
 
     public int getCurrentSeatings() {
         return currentSeatings;
+    }
+
+    public String getTableId() {
+        return tableId;
     }
 }

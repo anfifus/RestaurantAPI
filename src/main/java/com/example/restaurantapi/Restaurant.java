@@ -2,9 +2,11 @@ package com.example.restaurantapi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Restaurant {
     private static final int MAX_CAPACITY = 24;
+    private String restaurantId = UUID.randomUUID().toString();
     private String name;
     private int type;
     private static final int PIZZA = 1;
@@ -80,15 +82,33 @@ public class Restaurant {
         }
         return result;
     }
-
-    public void removeTableOnIndex(int pos) throws Exception {
-        if(this.tables.isEmpty() || pos>this.tables.size()){
-            throw new Exception();
+    public void removeAllTables(){
+        this.tables.clear();
+    }
+    public Table getTableByUID(String currentIdTable) throws Exception {
+        for (Table currentTable:tables) {
+            if (currentTable.getTableId().equals(currentIdTable)){
+                return currentTable;
+            }
         }
-        this.tables.remove(pos);
+        throw  new Exception("Table not found");
+    }
+    public void removeTable(Table tableToRemove){
+        tables.remove(tableToRemove);
     }
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public List<Table> getTables() {
+        return tables;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getRestaurantId() {
+        return restaurantId;
     }
 }
