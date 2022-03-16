@@ -1,7 +1,6 @@
 package com.example.restaurantapi;
 
 import org.json.JSONObject;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
-public class RestaurantController {
+@Service
+public class RestaurantService {
     private List<Restaurant> restaurantList = new ArrayList<>();
 
     public Restaurant createRestaurant(Restaurant restaurantId) throws Exception {
         for (Restaurant currentRestaurant : restaurantList) {
-            if (currentRestaurant.getRestaurantId().equals(restaurantId)) {
+            if (currentRestaurant.getRestaurantId().equals(restaurantId.getRestaurantId())) {
                 throw new Exception("Restaurant found" + currentRestaurant);
             }
         }

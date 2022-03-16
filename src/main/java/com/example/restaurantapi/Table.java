@@ -1,5 +1,6 @@
 package com.example.restaurantapi;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Table {
@@ -26,5 +27,18 @@ public class Table {
 
     public String getTableId() {
         return tableId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Table table = (Table) o;
+        return tableId.equals(table.tableId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tableId);
     }
 }
