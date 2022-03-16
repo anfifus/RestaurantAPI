@@ -1,12 +1,21 @@
 package com.example.restaurantapi;
 
+import javax.persistence.Id;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.util.Objects;
 import java.util.UUID;
-
+@Entity
 public class Table {
-
-    private String tableId = UUID.randomUUID().toString();
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "tableId", nullable = false)
+    private Long tableId;
     private int currentSeatings=0;
+
 
     public Table(){
 
@@ -25,9 +34,7 @@ public class Table {
         return currentSeatings;
     }
 
-    public String getTableId() {
-        return tableId;
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -40,5 +47,12 @@ public class Table {
     @Override
     public int hashCode() {
         return Objects.hash(tableId);
+    }
+
+    public Long getTableId() {
+        return tableId;
+    }
+    public void setTableId(Long tableId) {
+        this.tableId = tableId;
     }
 }

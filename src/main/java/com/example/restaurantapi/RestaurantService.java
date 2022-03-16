@@ -1,6 +1,7 @@
 package com.example.restaurantapi;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,15 +12,15 @@ import java.util.List;
 @Service
 public class RestaurantService {
     private List<Restaurant> restaurantList = new ArrayList<>();
+    private RestaurantRepository repositoryRestaurant;
+    @Autowired
+    public RestaurantService(RestaurantRepository repositoryRestaurant){
+        this.repositoryRestaurant = repositoryRestaurant;
+    }
+    public Restaurant createRestaurant(Restaurant restaurant) throws Exception {
 
-    public Restaurant createRestaurant(Restaurant restaurantId) throws Exception {
-        for (Restaurant currentRestaurant : restaurantList) {
-            if (currentRestaurant.getRestaurantId().equals(restaurantId.getRestaurantId())) {
-                throw new Exception("Restaurant found" + currentRestaurant);
-            }
-        }
-        restaurantList.add(restaurantId);
-        return restaurantId;
+        this.repositoryRestaurant.save(restaurant);
+        return restaurant;
     }
 
     public List<Restaurant> getRestaurantList() {
