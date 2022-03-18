@@ -1,5 +1,6 @@
 package com.example.restaurantapi;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +45,10 @@ public class RestaurantRestController {
     @PostMapping("/restaurants/{restaurantId}/tables")
     public void addTableInRestaurant(@RequestBody String jsonClients, @PathVariable String restaurantId) throws Exception{
 
-        restaurantService.addTableInRestaurant(jsonClients,  restaurantId);
+        JSONObject json = new JSONObject(jsonClients);
+        int clients = json.getInt("currentSeats");
+
+        restaurantService.addTableInRestaurant(clients,  restaurantId);
     }
     @GetMapping("restaurants/{restaurantId}/tables")
     public  List<Table> getAllTables(@PathVariable String restaurantId) throws Exception{

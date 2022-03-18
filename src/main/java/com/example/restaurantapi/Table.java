@@ -1,37 +1,56 @@
 package com.example.restaurantapi;
 
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.util.Objects;
-import java.util.UUID;
-@Entity
+
+@Entity(name = "tables")
 public class Table {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "tableId", nullable = false)
     private Long tableId;
-    private int currentSeatings=0;
+    private static int MAX_CLIENTS = 6;
+    private int currentSeats =0;
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 
 
     public Table(){
 
     }
+    public Table(int clients,Restaurant restaurant) throws Exception {
+        checkClients(clients);
+        checkClientsMoreThan6(clients);
+            this.currentSeats = clients;
+            this.restaurant = restaurant;
+    }
+    private void checkClientsMoreThan6(int clients) throws Exception {
+        if(clients > 6) {
+            throw new Exception("You can't have a table with more than 6 clients");
+        }
+    }
+    private void checkClients(int clients) throws Exception {
+        if (clients == 0) throw new Exception("If we ask the number of clients is because we have");
 
-    public void addClients(int numOfPeople) throws Exception {
+    }
+
+    public int addClients(int numOfPeople) throws Exception {
         checkValidNumOfPeople(numOfPeople);
-        this.currentSeatings=numOfPeople;
+        this.currentSeats = numOfPeople;
+        if (this.currentSeats > MAX_CLIENTS) {
+            this.currentSeats = MAX_CLIENTS;
+        }
+        return numOfPeople - currentSeats;
     }
 
     private void checkValidNumOfPeople(int numOfPeople) throws Exception {
         if(numOfPeople<=0) throw new Exception();
     }
 
-    public int getCurrentSeatings() {
-        return currentSeatings;
+    public int getCurrentSeats() {
+        return currentSeats;
     }
 
 
@@ -54,5 +73,9 @@ public class Table {
     }
     public void setTableId(Long tableId) {
         this.tableId = tableId;
+    }
+
+    public long getRestaurantUID() {
+        return restaurant.getId();
     }
 }

@@ -1,17 +1,15 @@
 package com.example.restaurantapi;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 @Entity
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long restaurantId;
+    @Column(name = "id")
+    private Long id;
     private static final int MAX_CAPACITY = 24;
     private String name;
     private int type;
@@ -19,7 +17,11 @@ public class Restaurant {
     private static final int KEBAB = 2;
     private static final int CHINO = 3;
 
-    //private List<Table> tables = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Table> tables = new ArrayList<>();
+
 
     public Restaurant(){
 
@@ -29,6 +31,14 @@ public class Restaurant {
         checkType(type);
         this.name = name;
         this.type = type;
+    }
+
+    /*public List<Table> getTables() {
+        return tables;
+    }*/
+
+    public void setTables(List<Table> tables) {
+        this.tables = tables;
     }
 
     private void checkType(int type) throws Exception {
@@ -49,23 +59,24 @@ public class Restaurant {
         return name;
     }
 
-    /*public int getCurrentSeatings() {
+    public int getCurrentSeats() {
         int result = 0;
         for (Table table : tables) {
-            result += table.getCurrentSeatings();
+            result += table.getCurrentSeats();
         }
+
         return result;
-    }*/
+    }
 
-   /* public int getRemainingSeats() {
-        return MAX_CAPACITY - getCurrentSeatings();
-    }*/
+    public int getRemainingSeats() {
+        return MAX_CAPACITY - getCurrentSeats();
+    }
 
 
-  /*  public void addClients(int numOfPeople) throws Exception {
+    public void addClients(int numOfPeople) throws Exception {
         checkPeopleCanEnter(numOfPeople);
         tables.add(createTable(numOfPeople));
-    }*/
+    }
 
     private Table createTable(int numOfPeople) throws Exception {
         Table table = new Table();
@@ -73,10 +84,10 @@ public class Restaurant {
         return table;
     }
 
-   /* private void checkPeopleCanEnter(int numOfPeople) throws Exception {
-        if ((this.getCurrentSeatings() + numOfPeople) > MAX_CAPACITY)
+    private void checkPeopleCanEnter(int numOfPeople) throws Exception {
+        if ((this.getCurrentSeats() + numOfPeople) > MAX_CAPACITY)
             throw new Exception("Massa gent");
-    }*/
+    }
 
     public int getMaxCapacity() {
         return MAX_CAPACITY;
@@ -91,33 +102,38 @@ public class Restaurant {
         }
         return result;
     }*/
-  /*  public void removeAllTables(){
+    public void removeAllTables(){
         this.tables.clear();
-    }*/
-   /* public Table getTableByUID(String currentIdTable) throws Exception {
+    }
+    public Table getTableByUID(String currentIdTable) throws Exception {
         for (Table currentTable:tables) {
             if (currentTable.getTableId().equals(currentIdTable)){
                 return currentTable;
             }
         }
         throw  new Exception("Table not found");
-    }*/
-   /* public void removeTable(Table tableToRemove){
+    }
+    public void removeTable(Table tableToRemove){
         tables.remove(tableToRemove);
-    }*/
+    }
 
-    public void setType(int type) {
+    public void setType(int type) throws Exception{
+
+        checkType(type);
         this.type = type;
     }
 
-  /*  public List<Table> getTables() {
+    public List<Table> getTables() {
         return tables;
-    }*/
+    }
 
-    public void setName(String name) {
+    public void setName(String name) throws Exception{
+        checkName(name);
+
         this.name = name;
     }
-    public Long getRestaurantId() {
-        return restaurantId;
+    public Long getId() {
+        return id;
     }
+
 }
